@@ -2,9 +2,9 @@
 
 > Breathe. Glow. Lumaire
 
-Lumaire is a light that can be controlled by breathe. Blow to turn it on, suck to turn it off.
+![lumaire](./lumaire.jpg)
 
-TODO: add pictures
+Lumaire is a light that can be controlled by breath. Blow to turn it on, suck to turn it off.
 
 ## Parts
 
