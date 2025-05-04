@@ -4,6 +4,8 @@
 
 ![lumaire](./lumaire.jpg)
 
+![lumaire-video](./lumaire.mp4)
+
 Lumaire is a light that can be controlled by breath. Blow to turn it on, suck to turn it off.
 
 ## Parts
