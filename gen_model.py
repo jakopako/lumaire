@@ -50,15 +50,16 @@ def load_data_from_csv(filename: str, label_column: str) -> tuple:
     return X, y_numeric
 
 
-X, y = load_data_from_csv('training-data-4.csv', label_column='label')
+# X, y = load_data_from_csv('training-data-4.csv', label_column='label')
 # for n in ["training-data-3-1.csv", "training-data-3-2-more-balanced.csv", "training-data-3-3-more-balanced.csv", "training-data-3-4.csv", "training-data-3-5.csv", "training-data-3-6.csv", "training-data-4.csv", "training-data-4-cleaned.csv", "training-data-4-1.csv"]:
-# for n in ["training-data-4.csv", "training-data-4-cleaned.csv", "training-data-4-1.csv"]:
+# for n in ["training-data-4.csv", "training-data-4-cleaned.csv", "training-data-4-1.csv", "training-data-4-2-cleaned.csv"]:
 #     print(f"######## Testing {n}")
-#     X, y = load_data_from_csv(n, label_column='label')
+#     filename = f'training-data/{n}'
+#     X, y = load_data_from_csv(filename, label_column='label')
 #     for i in [1, 5, 10, 20]:
 #         print(f"######## Testing {i} estimators")
 #         test_model(X, y, n_estimators=i)
-    # test_model(X, y, n_estimators=5)
-X, y = load_data_from_csv('training-data/training-data-4-cleaned.csv', label_column='label')
+#     test_model(X, y, n_estimators=5)
+X, y = load_data_from_csv('training-data/training-data-4-2-cleaned.csv', label_column='label')
 test_model(X, y, n_estimators=10)
 get_arduino_code(X, y, n_estimators=10)
