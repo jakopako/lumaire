@@ -139,24 +139,26 @@ void processAudio() {
     // for generating a training set
     printLabeledData(magnitude, mag_len, 1);
 
-    // Label mapping{'blow' : 0, 'nope' : 1, 'suck' : 2}
-    prevPred = pred;
-    pred = predictLabel(magnitude, mag_len, 2);
-    serialLog("prediction: ");
-    serialLogln(pred);
-    if (pred == 0 && prevPred == 0) {
-      if (batteryLow()) {
-        blinkNeoPixels();
-        return;
-      } else {
-        increaseBrightnessNeoPixels();
-        serialLogln("led on");
+    if (!TRAIN) {
+      // Label mapping{'blow' : 0, 'nope' : 1, 'suck' : 2}
+      prevPred = pred;
+      pred = predictLabel(magnitude, mag_len, 2);
+      serialLog("prediction: ");
+      serialLogln(pred);
+      if (pred == 0 && prevPred == 0) {
+        if (batteryLow() && !DEBUG) {
+          blinkNeoPixels();
+          return;
+        } else {
+          increaseBrightnessNeoPixels();
+          serialLogln("led on");
+        }
       }
-    }
-
-    if (pred == 2) {
-      turnOffNeoPixels();
-      serialLogln("led off");
+  
+      if (pred == 2) {
+        turnOffNeoPixels();
+        serialLogln("led off");
+      }
     }
   }
 }
@@ -197,41 +199,42 @@ void goToSleep() {
 struct labels {
   float center;
   float avg;
+  float min;
+  float max;
 };
 
-int predictLabel(float *magnitude, int mag_len, int mode) {
-  if (mode == 0) {
-    return blowClassifier.predict(magnitude);
-  } else if (mode == 1) {
-    struct labels l = getCalcLabels(magnitude, mag_len);
-    float values[2] = { l.avg, l.center };
-    return blowClassifier.predict(values);
-  } else if (mode == 2) {
-    int predS = suckClassifier.predict(magnitude);
-    // suckClassifier says suck
-    if (predS == 2) {
-      return 2;
-    }
-    struct labels l = getCalcLabels(magnitude, mag_len);
-    float values[2] = { l.avg, l.center };
-    int predB = blowClassifier.predict(values);
-    // blowClassifier says blow
-    if (predB == 0) {
-      return 0;
-    }
-    return 1;
+int predictLabel(float *magnitude, int mag_len) {
+  int predS = suckClassifier.predict(magnitude);
+  // suckClassifier says suck
+  if (predS == 2) {
+    return 2;
   }
-  return 0;
+  struct labels l = getCalcLabels(magnitude, mag_len);
+  float values[4] = { l.avg, l.center, l.min, l.max };
+  int predB = blowClassifier.predict(values);
+  // blowClassifier says blow
+  if (predB == 0) {
+    return 0;
+  }
+  return 1;
 }
 
 struct labels getCalcLabels(float *magnitude, int mag_len) {
   struct labels l;
   float c_nom = 0;
   float c_den = 0;
+  l.min = 100000.0;
+  l.max = 0.0;
   for (int i = 0; i < mag_len; i++) {
     if (i > 2) {
       c_nom = c_nom + i * magnitude[i];
       c_den = c_den + magnitude[i];
+      if (magnitude[i] > l.max) {
+        l.max = magnitude[i];
+      }
+      if (magnitude[i] < l.min) {
+        l.min = magnitude[i];
+      }
     }
   }
   l.center = c_nom / c_den;
@@ -253,13 +256,17 @@ void printLabeledData(float *magnitude, int mag_len, int mode) {
       Serial.print(l.avg);
       Serial.print(",");
       Serial.print(l.center);
+      Serial.print(",");
+      Serial.print(l.min);
+      Serial.print(",");
+      Serial.print(l.max);
     }
 
     // for labeling training data
     button_state = digitalRead(button_pin);
     if (button_state == HIGH) {
-      Serial.println(",\"suck\"");  // change to blow resp. suck
-      //Serial.println(",\"blow\"");  // change to blow resp. suck
+      //Serial.println(",\"suck\"");  // change to blow resp. suck
+      Serial.println(",\"blow\"");  // change to blow resp. suck
     } else {
       Serial.println(",\"nope\"");
     }
