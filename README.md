@@ -16,15 +16,14 @@ Lumaire is a light that can be controlled by breath. Blow to turn it on, suck to
 - [Adafruit NeoPixel Jewel](https://www.adafruit.com/product/2858)
 - 1500mAh LiPo battery, e.g. [this one](https://www.bastelgarage.ch/lipo-battery-1500mah-jst-2-0-lithium-ion-polymer)
 - TP4056 Lithium LiPo Battery Charging Module, either [USB C](https://www.bastelgarage.ch/tp4056-lithium-lipo-battery-charging-module-usb-c-5v-1a?search=TP4056) or [Micro USB](https://www.bastelgarage.ch/tp4056-lithium-lipo-battery-charging-module-micro-usb-5v-1a?search=TP4056)
+- 4 x screws (1.6 x 10 mm)
 
 - if you want to be fancy and also reduce the sensitivity of the lamp to the noise it makes when sliding it over a hard surface you can attach a thin layer of black filt to the bottom. You'll need to cut out the precise shape.
 
 ## Assembly
 
-TODO: add more details
-
 - print the 3d model
-- solder the electronic parts
+- solder the electronic parts (for now check the code to figure out how things need to be connected)
 - load code onto the Trinket M0
 - assemble everything
 
